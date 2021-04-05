@@ -69,22 +69,18 @@ Now, it is time to take a look at the Landoop UI with url: http://127.0.0.1:3030
 The main page is looks like:
 
 <img src="images/landoop-main.jpg" width="800">
-![](images/landoop-main.jpg)
 
 Click the "KAFKA CONNECTOR UI" button to access the connector papge. 
 
 <img src="images/landoop-connector-main.jpg" width="800">
-![](images/landoop-connector-main.jpg)
 
 Click the "NEW" button to create a Twitter connector.
 
 <img src="images/landoop-connector-new.jpg" width="800">
-![](images/landoop-connector-new.jpg.jpg)
 
 You can see that there are many existing connectors. Let's select the "Twitter" one under "Source" category. 
 
 <img src="images/landoop-new-connector-config.jpg" width="500">
-![](images/landoop-new-connector-config.jpg.jpg)
 
 Here, we need to copy the config from the source/source-twitter-distributed.propperties.sh file to the Landoop connector config panel.
 
@@ -123,12 +119,10 @@ The consumer key and access token are generated from the app created from the Tw
 After create this Twitter connector, we can see a new connector named "source-twitter-distributed" with a twitter icon pointing to a Kafka icon.
 
 <img src="images/landoop-new-connector-config.jpg" width="800">
-![](images/landoop-new-connector-config.jpg)
 
 Now, we can check distributed data from the Landoop topic page.
 
 <img src="images/landoop-topics.jpg" width="800">
-![](images/landoop-topics.jpg)
 
 Great! We have data from Twitter now. Then we need to set up a sink connector to save the distributed data to postgres.
 
@@ -187,9 +181,7 @@ postgres=# \l
 postgres=# \dt
 ```
 <img src="images/postgres-check-database.jpg" width="500">
-![](images/postgres-check-database.jpg)
 
 <img src="images/postgres-check-data.jpg" width="500">
-![](images/postgres-check-data.jpg)
 
 That is everything for now. We have real-time data coming from Twitter. Looking forward to add Machine learning and Neo4j part to this project.
