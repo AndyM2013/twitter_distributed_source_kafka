@@ -1,10 +1,10 @@
-# Distributed Twitter Data Using Kafka
+# Distributed Twitter Data Analysis    
 
-This project is about using Kafka to build a pipeline to ingest data from Twitter in real-time and sinks to PostgreSQL. These data can be used for a variety of interesting things. I will make updates in the future. 
+Purpose of this project is to apply Kafka skills to build a distributed data pipeline receiving real-time data from Twitter API and save it to a postgres database. Future updates on this project including but not limited to:
 
-* Using GraphQL to show the data changes in a dashboard.
-* Building a real-time sentiment analysis
-* Finding a way to convert nested user data which is a json format from Twitter API, then we could use Neo4j to create a social network map for community detection and centrality analysis
+* Real-time tweets sentiment analysis
+* Reflecting real-time data changes using GraphQL
+* Ongoing contributing social network graph for centrality analysis and community detection
  
 OK, let's take a look at how to retrieve distributed data from Twitter.
 
