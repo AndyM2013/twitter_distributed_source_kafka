@@ -41,7 +41,9 @@ services:
     ports:
       - 5432:5432                 # Postgres port
 ```
-Landoop is an awesome Kafka UI platform where you could easily monitor your Kafka. https://hub.docker.com/r/landoop/fast-data-dev/
+Landoop is an awesome Kafka UI platform where you could easily monitor your Kafka. 
+
+Reference: https://hub.docker.com/r/landoop/fast-data-dev/
 
 Next, let's access landoop inside docker.
 
@@ -62,4 +64,132 @@ kafka-topics --create --topic distributed_twitter_data --partitions 3 --replicat
 # Start a console consumer on that topic
 kafka-console-consumer --topic distributed_twitter_data --bootstrap-server 127.0.0.1:9092
 ```
-Now, it is time to take a look at the Landoop UI. The main page is looks like:
+Now, it is time to take a look at the Landoop UI with url: http://127.0.0.1:3030/
+
+The main page is looks like:
+
+<img src="images/landoop-main.jpg" width="800">
+![](images/landoop-main.jpg)
+
+Click the "KAFKA CONNECTOR UI" button to access the connector papge. 
+
+<img src="images/landoop-connector-main.jpg" width="800">
+![](images/landoop-connector-main.jpg)
+
+Click the "NEW" button to create a Twitter connector.
+
+<img src="images/landoop-connector-new.jpg" width="800">
+![](images/landoop-connector-new.jpg.jpg)
+
+You can see that there are many existing connectors. Let's select the "Twitter" one under "Source" category. 
+
+<img src="images/landoop-new-connector-config.jpg" width="500">
+![](images/landoop-new-connector-config.jpg.jpg)
+
+Here, we need to copy the config from the source/source-twitter-distributed.propperties.sh file to the Landoop connector config panel.
+
+```
+# Connector configuration
+name=source-twitter-distributed
+connector.class=com.eneco.trading.kafka.connect.twitter.TwitterSourceConnector
+tasks.max=1
+topic=distributed_twitter_data
+key.converter=org.apache.kafka.connect.json.JsonConverter
+key.converter.schemas.enable=true
+value.converter=org.apache.kafka.connect.json.JsonConverter
+value.converter.schemas.enable=true
+
+# Twitter connector specific configuration
+twitter.consumerkey=PUT YOU OWN CONFIG
+twitter.consumersecret=PUT YOU OWN CONFIG
+twitter.token=PUT YOU OWN CONFIG
+twitter.secret=PUT YOU OWN CONFIG
+
+track.terms=programming,java,kafka,scala
+language=en
+```
+In this config, the topic value is the one we used to create Kafka topics. 
+```
+kafka-topics --create --topic distributed_twitter_data --partitions 3 --replication-factor 1 --zookeeper 127.0.0.1:2181
+```
+The max tasks is 1 because we only have one data source which is Twitter.
+`org.apache.kafka.connect.json.JsonConverter` will be used to convert json data from Twitter API.
+
+The consumer key and access token are generated from the app created from the Twitter developer portal. This video will help you register a Twitter developer account, how to create an app, and generate access tokens.
+
+<a href="https://www.youtube.com/watch?v=vlvtqp44xoQ
+" target="_blank"><img src="images/Twitter-API-Key-video-screen-shot.jpg" border="10" /></a>
+
+After create this Twitter connector, we can see a new connector named "source-twitter-distributed" with a twitter icon pointing to a Kafka icon.
+
+<img src="images/landoop-new-connector-config.jpg" width="800">
+![](images/landoop-new-connector-config.jpg)
+
+Now, we can check distributed data from the Landoop topic page.
+
+<img src="images/landoop-topics.jpg" width="800">
+![](images/landoop-topics.jpg)
+
+Great! We have data from Twitter now. Then we need to set up a sink connector to save the distributed data to postgres.
+
+From the Landoop Kafka connector page, clicking "NEW" button, then we can find the "Jdbc" connector from the "Sinks" category. Let's select it and copy the sink/postgres/sink-postgres-twitter-distributed.properties file. 
+
+```
+# Basic configuration for our connector
+name=sink-postgres-twitter-distributed
+connector.class=io.confluent.connect.jdbc.JdbcSinkConnector
+
+tasks.max=1
+topics=distributed_twitter_data
+# enable schemas conversion
+key.converter=org.apache.kafka.connect.json.JsonConverter
+key.converter.schemas.enable=true
+value.converter=org.apache.kafka.connect.json.JsonConverter
+value.converter.schemas.enable=true
+# JDBCSink connector specific configuration
+# http://docs.confluent.io/3.2.0/connect/connect-jdbc/docs/sink_config_options.html
+connection.url=jdbc:postgresql://postgres:5432/postgres
+connection.user=postgres
+connection.password=postgres
+insert.mode=upsert
+# we want the primary key to be offset + partition
+pk.mode=kafka
+# default values:
+pk.fields=__connect_topic,__connect_partition,__connect_offset
+fields.whitelist=id,created_at,text,lang,is_retweet
+auto.create=true
+auto.evolve=true
+```
+Similary with source connector, max tasks is 1 because we just use one postgres to recieve data. Topics value is "distributed_twitter_data".
+The user and entity data are nested json formet and our Jdbc connector does not support it. 
+
+After the sink connector created, we should be able to access the data we got from Twitter.
+
+* Find postgres container id and access it
+```
+docker ps
+```
+
+```
+docker exec -it YOUR POSTGRES CONTAINER ID bash
+```
+
+```
+psql -U postgres
+```
+
+* Check postgres database and tables
+```
+postgres=# \l
+```
+
+```
+postgres=# \dt
+```
+<img src="images/postgres-check-database.jpg" width="500">
+![](images/postgres-check-database.jpg)
+
+<img src="images/postgres-check-data.jpg" width="500">
+![](images/postgres-check-data.jpg)
+
+That is everything for now. We have real-time data coming from Twitter. Looking forward to add Machine learning and Neo4j part to this project.
