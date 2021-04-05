@@ -1,4 +1,4 @@
-# Disctributed Twitter Data Using Kafka
+# Distributed Twitter Data Using Kafka
 
 This project is about using Kafka to build a pipeline to ingest data from Twitter in real-time and sinks to PostgreSQL. These data can be used for a variety of interesting things. I will make updates in the future. 
 
@@ -50,7 +50,7 @@ Next, let's access landoop inside docker.
 ```
 docker run --rm -it --net=host landoop/fast-data-dev:cp3.3.0 bash
 ```
-Under the root account, we could set up our kafka topic and kafka consumer.
+Under the root account, we could set up our Kafka topic and Kafka consumer.
 ```
 # TwitterSourceConnector in distributed mode:
 # Access landoop fast-data-dev as root 
@@ -70,7 +70,7 @@ The main page is looks like:
 
 <img src="images/landoop-main.jpg" width="800">
 
-Click the "KAFKA CONNECTOR UI" button to access the connector papge. 
+Click the "KAFKA CONNECTOR UI" button to access the connector page. 
 
 <img src="images/landoop-connector-main.jpg" width="800">
 
@@ -78,11 +78,11 @@ Click the "NEW" button to create a Twitter connector.
 
 <img src="images/landoop-connector-new.jpg" width="800">
 
-You can see that there are many existing connectors. Let's select the "Twitter" one under "Source" category. 
+You can see that there are many existing connectors. Let's select the "Twitter" one under the "Source" category. 
 
 <img src="images/landoop-new-connector-config.jpg" width="500">
 
-Here, we need to copy the config from the source/source-twitter-distributed.propperties.sh file to the Landoop connector config panel.
+Here, we need to copy the config from the source/source-twitter-distributed.properties.sh file to the Landoop connector config panel.
 
 ```
 # Connector configuration
@@ -116,7 +116,7 @@ The consumer key and access token are generated from the app created from the Tw
 <a href="https://www.youtube.com/watch?v=vlvtqp44xoQ
 " target="_blank"><img src="images/Twitter-API-Key-video-screen-shot.jpg" border="10" /></a>
 
-After create this Twitter connector, we can see a new connector named "source-twitter-distributed" with a twitter icon pointing to a Kafka icon.
+After creating this Twitter connector, we can see a new connector named "source-twitter-distributed" with a twitter icon pointing to a Kafka icon.
 
 <img src="images/landoop-new-connector-config.jpg" width="800">
 
@@ -154,10 +154,10 @@ fields.whitelist=id,created_at,text,lang,is_retweet
 auto.create=true
 auto.evolve=true
 ```
-Similary with source connector, max tasks is 1 because we just use one postgres to recieve data. Topics value is "distributed_twitter_data".
-The user and entity data are nested json formet and our Jdbc connector does not support it. 
+Similar with the source connector, max tasks is 1 because we just use one postgres to receive data. Topics value is "distributed_twitter_data".
+The user and entity data are nested json format and our Jdbc connector does not support it. 
 
-After the sink connector created, we should be able to access the data we got from Twitter.
+After the sink connector is created, we should be able to access the data we got from Twitter.
 
 * Find postgres container id and access it
 ```
@@ -184,4 +184,4 @@ postgres=# \dt
 
 <img src="images/postgres-check-data.jpg" width="500">
 
-That is everything for now. We have real-time data coming from Twitter. Looking forward to add Machine learning and Neo4j part to this project.
+That is everything for now. We have real-time data coming from Twitter. Looking forward to adding the Machine learning and Neo4j parts to this project.
